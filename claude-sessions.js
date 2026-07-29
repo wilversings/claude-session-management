@@ -12,7 +12,8 @@
 // disappears on `rm` — there is no separate pin database to keep in sync.
 //
 // Single entry point: `claude-session <operation> [args...]`
-//   claude-session list   [path]
+//   claude-session list     [path]
+//   claude-session projects
 //   claude-session pin     <session-id-or-partial> [path]
 //   claude-session unpin   <session-id-or-partial> [path]
 //   claude-session mv      <session-id-or-partial> <from-path> <to-path>
@@ -168,14 +169,22 @@ function resolveSession(dir, sessionId) {
     return matches[0];
 }
 
-// Best-effort real project path for a project dir (reads cwd from a session;
-// falls back to the encoded dir name).
+// Best-effort real project path for a project dir. The directory NAME is the
+// source of truth for which project this is, but decoding it is ambiguous, so we
+// read the 'cwd' from the sessions instead. A session moved in from another
+// project keeps its old 'cwd', so we prefer the one whose encoding matches this
+// dir's name (the authoritative cwd for this project) and only fall back to an
+// arbitrary cwd, then the raw dir name, when none matches.
 function projectCwd(dir) {
+    const base = path.basename(dir);
+    let fallback = null;
     for (const name of listJsonl(dir)) {
         const m = readText(path.join(dir, name)).match(/"cwd":"([^"]*)"/);
-        if (m) return m[1];
+        if (!m) continue;
+        if (fallback === null) fallback = m[1];
+        if (encodePath(m[1]) === base) return m[1];
     }
-    return path.basename(dir);
+    return fallback !== null ? fallback : base;
 }
 
 // Format a Date as 'YYYY-MM-DD HH:MM' in local time.
@@ -260,6 +269,38 @@ function opList(args) {
     if (!any) {
         console.log('No Claude Code sessions found');
         return 1;
+    }
+    return 0;
+}
+
+// List all projects that have Claude Code sessions, one per line, with a count
+// of how many sessions each holds. Sorted by project path.
+function opProjects() {
+    let names;
+    try {
+        names = fs.readdirSync(projectsRoot).sort();
+    } catch {
+        names = [];
+    }
+
+    const rows = [];
+    for (const name of names) {
+        const dir = path.join(projectsRoot, name);
+        if (!isDir(dir)) continue;
+        const count = listJsonl(dir).length;
+        if (count === 0) continue;
+        rows.push({ cwd: projectCwd(dir), count });
+    }
+
+    if (rows.length === 0) {
+        console.log('No Claude Code projects found');
+        return 1;
+    }
+
+    rows.sort((a, b) => a.cwd.localeCompare(b.cwd));
+    for (const r of rows) {
+        const label = r.count === 1 ? 'session' : 'sessions';
+        console.log(`${r.cwd}   (${r.count} ${label})`);
     }
     return 0;
 }
@@ -460,13 +501,14 @@ function opHelp() {
     console.log('');
     console.log('Operations:');
     console.log('  list  [path]                              List sessions; no path = all projects grouped');
+    console.log('  projects                                  List all projects with session counts');
     console.log('  pin   <session-id-or-partial> [path]      Star a session (shows ⭐ in /resume)');
     console.log("  unpin <session-id-or-partial> [path]      Remove a session's star");
     console.log('  mv    <session-id-or-partial> <from> <to> Move a session between project paths');
     console.log('  rm    [-f|--force] <id-or-partial> [path] Delete a session');
     console.log('  rm    -i [path]                           Interactively browse + delete (fzf)');
     console.log('');
-    console.log('Aliases: ls=list, move=mv, delete/remove=rm, help/-h/--help');
+    console.log('Aliases: ls=list, proj=projects, move=mv, delete/remove=rm, help/-h/--help');
     return 0;
 }
 
@@ -499,6 +541,9 @@ function main(argv) {
         case 'list':
         case 'ls':
             return opList(rest);
+        case 'projects':
+        case 'proj':
+            return opProjects();
         case 'pin':
             return opPin(rest);
         case 'unpin':
