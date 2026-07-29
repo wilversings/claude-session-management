@@ -1,0 +1,35 @@
+{
+  "name": "claude-session-management",
+  "version": "1.0.0",
+  "description": "Pin (star), move, and delete Claude Code sessions from the command line.",
+  "keywords": [
+    "claude",
+    "claude-code",
+    "cli",
+    "sessions",
+    "resume"
+  ],
+  "homepage": "https://github.com/wilversings/claude-session-management#readme",
+  "bugs": {
+    "url": "https://github.com/wilversings/claude-session-management/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wilversings/claude-session-management.git"
+  },
+  "license": "MIT",
+  "author": "Marius Aiordăchioaei <aiordachioaei.marius@gmail.com>",
+  "type": "commonjs",
+  "bin": {
+    "claude-session": "claude-sessions.js"
+  },
+  "files": [
+    "claude-sessions.js"
+  ],
+  "engines": {
+    "node": ">=14"
+  },
+  "scripts": {
+    "test": "node --check claude-sessions.js && echo 'syntax OK'"
+  }
+}
