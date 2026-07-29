@@ -26,6 +26,25 @@ claude-session rm -i                 # browse + delete with fzf
 
 `path` defaults to the current directory. Any unique chunk of a session id works — no need to type the whole UUID.
 
+### Export & import
+
+Move sessions between machines (or back them up) as a self-contained archive:
+
+```sh
+claude-session export 4bdd76                  # one session -> claude-sessions-<ts>.tar.gz
+claude-session export --project ~/repos/app   # a whole project
+claude-session export --all -o backup.tar.gz  # everything, to a named file
+claude-session export 4bdd76 -o sess.zip      # .zip instead of .tar.gz
+
+claude-session import backup.tar.gz           # restore each session to its own project
+claude-session import sess.zip --to ~/repos/x # force them all into one project
+```
+
+The archive carries a `manifest.json` recording each session's project, so `import`
+puts sessions back where they belong. Existing sessions are skipped unless you pass `-f`.
+The output extension picks the format: `.zip` uses `zip`/`unzip`, anything else is `.tar.gz`
+(needs `tar`) — both are ambient system tools.
+
 Aliases: `ls`, `move`, `delete`/`remove`. `claude-session help` for the full list.
 
 > Heads up: a *running* session caches its title, so pinning the one you're in won't show the ⭐ in `/resume` until Claude Code reloads.

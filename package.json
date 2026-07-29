@@ -24,12 +24,14 @@
     "claude-session": "claude-sessions.js"
   },
   "files": [
-    "claude-sessions.js"
+    "claude-sessions.js",
+    "lib/",
+    "commands/"
   ],
   "engines": {
     "node": ">=14"
   },
   "scripts": {
-    "test": "node --check claude-sessions.js && echo 'syntax OK'"
+    "test": "for f in claude-sessions.js lib/*.js commands/*.js; do node --check \"$f\" || exit 1; done && echo 'syntax OK'"
   }
 }
