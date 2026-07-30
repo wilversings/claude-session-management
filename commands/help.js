@@ -15,6 +15,8 @@ function opHelp() {
     console.log('  mv    <session-id-or-partial> <from> <to> Move a session between project paths');
     console.log('  rm    [-f|--force] <id-or-partial> [path] Delete a session');
     console.log('  rm    -i [path]                           Interactively browse + delete (fzf)');
+    console.log('  rm-untitled [-f|--force] [path]           Delete all untitled sessions (asks first)');
+    console.log('  rm-project [-f|--force] [path]            Delete a whole project + all its sessions (asks first)');
     console.log('  export <id-or-partial> [path] [-o out]    Export a session to an archive');
     console.log('  export --project [path] [-o out]          Export a whole project');
     console.log('  export --all [-o out]                     Export every session');
@@ -24,7 +26,7 @@ function opHelp() {
     console.log('(needs tar / zip+unzip on PATH). Import restores each session to the');
     console.log('project it came from, or use --to to redirect them all to one project.');
     console.log('');
-    console.log('Aliases: ls=list, proj=projects, move=mv, delete/remove=rm, help/-h/--help');
+    console.log('Aliases: ls=list, proj=projects, move=mv, delete/remove=rm, clean-untitled=rm-untitled, help/-h/--help');
     return 0;
 }
 

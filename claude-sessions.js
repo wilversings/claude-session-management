@@ -38,6 +38,8 @@ const { opPin } = require('./commands/pin');
 const { opUnpin } = require('./commands/unpin');
 const { opMv } = require('./commands/mv');
 const { opRm } = require('./commands/rm');
+const { opRmUntitled } = require('./commands/rm-untitled');
+const { opRmProject } = require('./commands/rm-project');
 const { opExport } = require('./commands/export');
 const { opImport } = require('./commands/import');
 const { opHelp } = require('./commands/help');
@@ -64,6 +66,11 @@ function main(argv) {
         case 'delete':
         case 'remove':
             return opRm(rest);
+        case 'rm-untitled':
+        case 'clean-untitled':
+            return opRmUntitled(rest);
+        case 'rm-project':
+            return opRmProject(rest);
         case 'export':
             return opExport(rest);
         case 'import':

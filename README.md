@@ -22,6 +22,9 @@ claude-session unpin 4bdd76          # remove the ⭐
 claude-session mv 4bdd76 ~/old ~/new # move to another project
 claude-session rm 4bdd76             # delete one (asks first; -f to skip)
 claude-session rm -i                 # browse + delete with fzf
+claude-session rm-untitled            # delete every untitled session (all projects, asks first)
+claude-session rm-untitled ~/repos/x  # ...scoped to one project
+claude-session rm-project ~/repos/old  # delete a whole project + all its sessions (asks first)
 ```
 
 `path` defaults to the current directory. Any unique chunk of a session id works — no need to type the whole UUID.
@@ -45,7 +48,7 @@ puts sessions back where they belong. Existing sessions are skipped unless you p
 The output extension picks the format: `.zip` uses `zip`/`unzip`, anything else is `.tar.gz`
 (needs `tar`) — both are ambient system tools.
 
-Aliases: `ls`, `move`, `delete`/`remove`. `claude-session help` for the full list.
+Aliases: `ls`, `move`, `delete`/`remove`, `clean-untitled`. `claude-session help` for the full list.
 
 > Heads up: a *running* session caches its title, so pinning the one you're in won't show the ⭐ in `/resume` until Claude Code reloads.
 
