@@ -1,8 +1,8 @@
 # claude-session
 
-Pin ⭐, move, and delete your [Claude Code](https://claude.com/claude-code) sessions from the terminal.
+Star ⭐, move, and delete your [Claude Code](https://claude.com/claude-code) sessions from the terminal.
 
-Pinning drops a ⭐ into a session's title so it stands out in the `/resume` picker — no separate database, the star just rides along on the session file.
+Starring drops a ⭐ into a session's title so it stands out in the `/resume` picker — no separate database, the star just rides along on the session file.
 
 ## Install
 
@@ -17,8 +17,8 @@ Needs Node ≥ 14. The interactive delete (`rm -i`) also wants [fzf](https://git
 ```sh
 claude-session list                  # all projects, grouped
 claude-session list ~/repos/my-app   # just one project
-claude-session pin 4bdd76            # ⭐ a session (current project)
-claude-session unpin 4bdd76          # remove the ⭐
+claude-session star 4bdd76           # ⭐ a session (current project)
+claude-session unstar 4bdd76         # remove the ⭐
 claude-session mv 4bdd76 ~/old ~/new # move to another project
 claude-session mv-project ~/old ~/new # move a whole project's sessions
 claude-session rm 4bdd76             # delete one (asks first; -f to skip)
@@ -54,7 +54,7 @@ The output extension picks the format: `.zip` uses `zip`/`unzip`, anything else 
 
 Aliases: `ls`, `move`, `delete`/`remove`, `clean-untitled`. `claude-session help` for the full list.
 
-> Heads up: a *running* session caches its title, so pinning the one you're in won't show the ⭐ in `/resume` until Claude Code reloads.
+> Heads up: a *running* session caches its title, so starring the one you're in won't show the ⭐ in `/resume` until Claude Code reloads.
 
 ## License
 

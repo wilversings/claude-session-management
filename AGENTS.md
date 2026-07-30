@@ -5,7 +5,7 @@ Guidance for AI agents (and humans) working on this repo. Read before editing.
 ## What this is
 
 A zero-dependency Node.js CLI (`claude-sessions.js`, exposed as `claude-session`)
-that lists, pins, moves, and deletes Claude Code sessions.
+that lists, stars, moves, and deletes Claude Code sessions.
 
 ## Layout
 
@@ -13,7 +13,7 @@ that lists, pins, moves, and deletes Claude Code sessions.
 - `lib/common.js` — shared helpers (project-dir resolution, title read/write,
   session lookup, filesystem/prompt utilities). Everything reusable lives here.
 - `commands/<op>.js` — one file per operation, each exporting its `op*` function
-  (`list`, `projects`, `pin`, `unpin`, `mv`, `rm`, `export`, `import`, `help`).
+  (`list`, `projects`, `star`, `unstar`, `mv`, `rm`, `export`, `import`, `help`).
   A helper used by only one command (e.g. `rmInteractive`, `collectSessions`)
   stays private to that command's file; promote it to `lib/common.js` only when a
   second command needs it. Still no npm deps — modules `require` each other only.
@@ -34,9 +34,9 @@ that lists, pins, moves, and deletes Claude Code sessions.
    against the `sessionId` stored *inside* the file. Rename the file and the
    session becomes unresumable. `mv` between projects moves the file across
    directories but keeps the same basename — that's fine.
-2. **Pinning = a ⭐ in the title, nothing else.** To pin, append a new
-   `custom-title` record whose `customTitle` is `⭐ <old title>`. To unpin, append
-   one with the star stripped. There is **no** sidecar/pin database — the star
+2. **Starring = a ⭐ in the title, nothing else.** To star, append a new
+   `custom-title` record whose `customTitle` is `⭐ <old title>`. To unstar, append
+   one with the star stripped. There is **no** sidecar/star database — the star
    lives in the file so it travels on `mv` and vanishes on `rm` for free.
 3. **Guard the trailing newline before appending.** If the file's last byte isn't
    `\n`, our record glues onto the previous line, that line fails `JSON.parse`,
@@ -54,7 +54,7 @@ that lists, pins, moves, and deletes Claude Code sessions.
   missing matches print a diagnostic and exit non-zero.
 - `list` with no path groups every project; with a path lists just that one.
 - `mv` doesn't rewrite the `cwd` recorded inside the file — display-only, harmless.
-- A *running* session caches its own title in memory, so re-pinning the active
+- A *running* session caches its own title in memory, so re-starring the active
   session won't restar in `/resume` until Claude Code reloads.
 - `export` bundles the raw `.jsonl` files plus a `manifest.json` (each session's
   `sessionId`, `cwd`, and `title`). `import` reads the manifest and drops each

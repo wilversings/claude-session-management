@@ -1,16 +1,16 @@
-// unpin — strip the leading ⭐ from a session's title.
+// unstar — strip the leading ⭐ from a session's title.
 
 'use strict';
 
 const path = require('path');
-const { projectDir, resolveSession, sessionTitle, setTitle, titleIsPinned } = require('../lib/common');
+const { projectDir, resolveSession, sessionTitle, setTitle, titleIsStarred } = require('../lib/common');
 
-// Unpin a session: strip the leading ⭐ from its title.
-function opUnpin(args) {
+// Unstar a session: strip the leading ⭐ from its title.
+function opUnstar(args) {
     const sessionId = args[0];
     const targetPath = args[1] || process.cwd();
     if (!sessionId) {
-        console.log('Usage: claude-session unpin <session-id-or-partial> [project-path]');
+        console.log('Usage: claude-session unstar <session-id-or-partial> [project-path]');
         return 1;
     }
     const dir = projectDir(targetPath);
@@ -19,16 +19,16 @@ function opUnpin(args) {
 
     const id = path.basename(match, '.jsonl');
     const title = sessionTitle(match);
-    if (!titleIsPinned(title)) {
-        console.log(`Not pinned: ${id}`);
+    if (!titleIsStarred(title)) {
+        console.log(`Not starred: ${id}`);
         return 1;
     }
 
     const newTitle = title.replace(/^⭐\s*/, '');
     setTitle(match, id, newTitle);
-    console.log(`Unpinned: ${id}`);
+    console.log(`Unstarred: ${id}`);
     console.log(`  title: ${newTitle}`);
     return 0;
 }
 
-module.exports = { opUnpin };
+module.exports = { opUnstar };

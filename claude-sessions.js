@@ -1,21 +1,21 @@
 #!/usr/bin/env node
-// Claude Code session management: pin (star), move, and delete sessions.
+// Claude Code session management: star, move, and delete sessions.
 // Sessions live at ~/.claude/projects/<path-with-slashes-replaced-by-dashes>/<session-id>.jsonl
 //
-// Pinning writes a ⭐ into the session's own title so it shows up starred in
+// Starring writes a ⭐ into the session's own title so it shows up starred in
 // Claude Code's /resume picker. It does this the same way /rename does: by
 // appending a "custom-title" record to the .jsonl (the last such record wins).
 // The file is NEVER renamed — /resume matches a session's filename against the
 // "sessionId" recorded inside the file, so renaming breaks the lookup.
 //
 // Because the star lives inside the file, it travels automatically on `mv` and
-// disappears on `rm` — there is no separate pin database to keep in sync.
+// disappears on `rm` — there is no separate star database to keep in sync.
 //
 // Single entry point: `claude-session <operation> [args...]`
 //   claude-session list     [path]
 //   claude-session projects
-//   claude-session pin     <session-id-or-partial> [path]
-//   claude-session unpin   <session-id-or-partial> [path]
+//   claude-session star     <session-id-or-partial> [path]
+//   claude-session unstar   <session-id-or-partial> [path]
 //   claude-session mv      <session-id-or-partial> <from-path> <to-path>
 //   claude-session mv-project <from-path> <to-path>
 //   claude-session rm      [-f|--force] <session-id-or-partial> [path]
@@ -35,8 +35,8 @@
 
 const { opList } = require('./commands/list');
 const { opProjects } = require('./commands/projects');
-const { opPin } = require('./commands/pin');
-const { opUnpin } = require('./commands/unpin');
+const { opStar } = require('./commands/star');
+const { opUnstar } = require('./commands/unstar');
 const { opMv } = require('./commands/mv');
 const { opMvProject } = require('./commands/mv-project');
 const { opRm } = require('./commands/rm');
@@ -57,10 +57,10 @@ function main(argv) {
         case 'projects':
         case 'proj':
             return opProjects();
-        case 'pin':
-            return opPin(rest);
-        case 'unpin':
-            return opUnpin(rest);
+        case 'star':
+            return opStar(rest);
+        case 'unstar':
+            return opUnstar(rest);
         case 'mv':
         case 'move':
             return opMv(rest);
