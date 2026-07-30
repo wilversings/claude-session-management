@@ -4,10 +4,16 @@
 
 const fs = require('fs');
 const path = require('path');
-const { projectDir, projectCwd, listJsonl, isDir } = require('../lib/common');
+const { projectDir, projectCwd, listJsonl, isDir, resolveCwd, rewriteCwd } = require('../lib/common');
 
 // Move every session file from one project path to another in one shot.
 // Unlike `mv`, this operates on the whole project directory at once.
+//
+// If <to-path> is already an existing project, this merges: the moved
+// sessions are added alongside whatever sessions are already there, nothing
+// existing is deleted. Only a literal filename collision would overwrite one
+// file — practically impossible, since session filenames are Claude Code's
+// own random UUIDs.
 function opMvProject(args) {
     const [fromPath, toPath] = args;
     if (!fromPath || !toPath) {
@@ -29,9 +35,16 @@ function opMvProject(args) {
         return 1;
     }
 
+    // Prefer the cwd already recorded for the destination (if it's an existing
+    // project) so we don't disagree with sessions already living there.
+    const toHasSessions = isDir(toDir) && listJsonl(toDir).length > 0;
+    const toCwd = toHasSessions ? projectCwd(toDir) : resolveCwd(toPath);
+
     fs.mkdirSync(toDir, { recursive: true });
     for (const name of names) {
-        fs.renameSync(path.join(fromDir, name), path.join(toDir, name));
+        const dest = path.join(toDir, name);
+        fs.renameSync(path.join(fromDir, name), dest);
+        rewriteCwd(dest, fromCwd, toCwd);
     }
 
     // Clean up the source project directory if that emptied it out entirely.
@@ -41,8 +54,7 @@ function opMvProject(args) {
 
     console.log(`Moved ${names.length} session${names.length === 1 ? '' : 's'}`);
     console.log(`  from: ${fromDir}  (${fromCwd})`);
-    console.log(`  to:   ${toDir}`);
-    console.log("Note: entries inside the files still record the old 'cwd' — this affects display only, not the move.");
+    console.log(`  to:   ${toDir}  (${toCwd})`);
     return 0;
 }
 

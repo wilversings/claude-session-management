@@ -20,6 +20,7 @@ claude-session list ~/repos/my-app   # just one project
 claude-session pin 4bdd76            # ⭐ a session (current project)
 claude-session unpin 4bdd76          # remove the ⭐
 claude-session mv 4bdd76 ~/old ~/new # move to another project
+claude-session mv-project ~/old ~/new # move a whole project's sessions
 claude-session rm 4bdd76             # delete one (asks first; -f to skip)
 claude-session rm -i                 # browse + delete with fzf
 claude-session rm-untitled            # delete every untitled session (all projects, asks first)
@@ -28,6 +29,9 @@ claude-session rm-project ~/repos/old  # delete a whole project + all its sessio
 ```
 
 `path` defaults to the current directory. Any unique chunk of a session id works — no need to type the whole UUID.
+
+Moving into a project that already exists **merges** the sessions in — existing sessions at
+the destination are left alone, nothing gets overwritten.
 
 ### Export & import
 

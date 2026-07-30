@@ -14,6 +14,7 @@ function opHelp() {
     console.log("  unpin <session-id-or-partial> [path]      Remove a session's star");
     console.log('  mv    <session-id-or-partial> <from> <to> Move a session between project paths');
     console.log('  mv-project <from-path> <to-path>          Move a whole project (all its sessions)');
+    console.log("                                             If <to> already exists, sessions are merged in, not overwritten");
     console.log('  rm    [-f|--force] <id-or-partial> [path] Delete a session');
     console.log('  rm    -i [path]                           Interactively browse + delete (fzf)');
     console.log('  rm-untitled [-f|--force] [path]           Delete all untitled sessions (asks first)');
