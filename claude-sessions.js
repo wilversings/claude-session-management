@@ -17,6 +17,7 @@
 //   claude-session pin     <session-id-or-partial> [path]
 //   claude-session unpin   <session-id-or-partial> [path]
 //   claude-session mv      <session-id-or-partial> <from-path> <to-path>
+//   claude-session mv-project <from-path> <to-path>
 //   claude-session rm      [-f|--force] <session-id-or-partial> [path]
 //   claude-session rm -i   [path]        // interactive browse + delete (fzf)
 //   claude-session export  <session-id-or-partial> [path] [-o out]
@@ -37,6 +38,7 @@ const { opProjects } = require('./commands/projects');
 const { opPin } = require('./commands/pin');
 const { opUnpin } = require('./commands/unpin');
 const { opMv } = require('./commands/mv');
+const { opMvProject } = require('./commands/mv-project');
 const { opRm } = require('./commands/rm');
 const { opRmUntitled } = require('./commands/rm-untitled');
 const { opRmProject } = require('./commands/rm-project');
@@ -62,6 +64,9 @@ function main(argv) {
         case 'mv':
         case 'move':
             return opMv(rest);
+        case 'mv-project':
+        case 'move-project':
+            return opMvProject(rest);
         case 'rm':
         case 'delete':
         case 'remove':

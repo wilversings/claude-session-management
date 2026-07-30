@@ -13,6 +13,7 @@ function opHelp() {
     console.log('  pin   <session-id-or-partial> [path]      Star a session (shows ⭐ in /resume)');
     console.log("  unpin <session-id-or-partial> [path]      Remove a session's star");
     console.log('  mv    <session-id-or-partial> <from> <to> Move a session between project paths');
+    console.log('  mv-project <from-path> <to-path>          Move a whole project (all its sessions)');
     console.log('  rm    [-f|--force] <id-or-partial> [path] Delete a session');
     console.log('  rm    -i [path]                           Interactively browse + delete (fzf)');
     console.log('  rm-untitled [-f|--force] [path]           Delete all untitled sessions (asks first)');
@@ -26,7 +27,7 @@ function opHelp() {
     console.log('(needs tar / zip+unzip on PATH). Import restores each session to the');
     console.log('project it came from, or use --to to redirect them all to one project.');
     console.log('');
-    console.log('Aliases: ls=list, proj=projects, move=mv, delete/remove=rm, clean-untitled=rm-untitled, help/-h/--help');
+    console.log('Aliases: ls=list, proj=projects, move=mv, move-project=mv-project, delete/remove=rm, clean-untitled=rm-untitled, help/-h/--help');
     return 0;
 }
 
