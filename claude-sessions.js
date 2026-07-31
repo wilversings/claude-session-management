@@ -16,6 +16,7 @@
 //   claude-session projects
 //   claude-session star     <session-id-or-partial> [path]
 //   claude-session unstar   <session-id-or-partial> [path]
+//   claude-session star -i  [path]        // interactive browse + toggle stars (fzf)
 //   claude-session mv      <session-id-or-partial> <from-path> <to-path>
 //   claude-session mv-project <from-path> <to-path>
 //   claude-session rm      [-f|--force] <session-id-or-partial> [path]
@@ -24,7 +25,7 @@
 //   claude-session export  --project [path] [-o out] | --all [-o out]
 //   claude-session import  <archive> [--to path] [-f]
 //
-// Node.js (>=14). No npm deps — the interactive delete additionally needs fzf,
+// Node.js (>=14). No npm deps — the interactive modes additionally need fzf,
 // and export/import shell out to tar (or zip/unzip for .zip archives).
 // Run it directly or symlink it onto your PATH as `claude-session`.
 //
