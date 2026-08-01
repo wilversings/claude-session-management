@@ -9,16 +9,16 @@ function opHelp() {
     console.log('');
     console.log('Operations:');
     console.log('  list  [path]                              List sessions; no path = all projects grouped');
-    console.log('  projects                                  List all projects with session counts');
+    console.log('  project ls                                List all projects with session counts');
+    console.log('  project mv <from-path> <to-path>          Move a whole project (all its sessions)');
+    console.log("                                             If <to> already exists, sessions are merged in, not overwritten");
+    console.log('  project rm [-f|--force] [path]            Delete a whole project + all its sessions (asks first)');
     console.log('  star   <session-id-or-partial> [path]     Star a session (shows ⭐ in /resume)');
     console.log("  unstar <session-id-or-partial> [path]     Remove a session's star");
     console.log('  -i [path]                                 Interactive fzf browser: enter toggles ⭐, ctrl-x/del deletes');
     console.log('  mv    <session-id-or-partial> <from> <to> Move a session between project paths');
-    console.log('  mv-project <from-path> <to-path>          Move a whole project (all its sessions)');
-    console.log("                                             If <to> already exists, sessions are merged in, not overwritten");
     console.log('  rm    [-f|--force] <id-or-partial> [path] Delete a session');
     console.log('  rm-untitled [-f|--force] [path]           Delete all untitled sessions (asks first)');
-    console.log('  rm-project [-f|--force] [path]            Delete a whole project + all its sessions (asks first)');
     console.log('  export <id-or-partial> [path] [-o out]    Export a session to an archive');
     console.log('  export --project [path] [-o out]          Export a whole project');
     console.log('  export --all [-o out]                     Export every session');
@@ -28,7 +28,8 @@ function opHelp() {
     console.log('(needs tar / zip+unzip on PATH). Import restores each session to the');
     console.log('project it came from, or use --to to redirect them all to one project.');
     console.log('');
-    console.log('Aliases: ls=list, proj=projects, move=mv, move-project=mv-project, delete/remove=rm, clean-untitled=rm-untitled, help/-h/--help');
+    console.log('Aliases: ls=list, proj=project, move=mv, delete/remove=rm, clean-untitled=rm-untitled, help/-h/--help');
+    console.log('  project subcommands: ls (list), mv (move), rm (delete/remove)');
     return 0;
 }
 

@@ -24,11 +24,12 @@ claude-session unstar 4bdd76         # remove the ⭐
 claude-session -i                    # browse + star/delete with fzf
 claude-session -i ~/repos/my-app     # ...scoped to one project
 claude-session mv 4bdd76 ~/old ~/new # move to another project
-claude-session mv-project ~/old ~/new # move a whole project's sessions
+claude-session project ls             # list every project with session counts
+claude-session project mv ~/old ~/new # move a whole project's sessions
 claude-session rm 4bdd76             # delete one (asks first; -f to skip)
 claude-session rm-untitled            # delete every untitled session (all projects, asks first)
 claude-session rm-untitled ~/repos/x  # ...scoped to one project
-claude-session rm-project ~/repos/old  # delete a whole project + all its sessions (asks first)
+claude-session project rm ~/repos/old  # delete a whole project + all its sessions (asks first)
 ```
 
 `path` defaults to the current directory. Any unique chunk of a session id works — no need to type the whole UUID.
@@ -74,7 +75,9 @@ exists in the destination project. By default `import` **skips** it (printing
 Pass `-f`/`--force` to **overwrite** conflicting sessions with the archived copy.
 The closing summary reports how many were imported and how many were skipped.
 
-Aliases: `ls`, `move`, `delete`/`remove`, `clean-untitled`. `claude-session help` for the full list.
+Whole-project operations live under `project`: `project ls`, `project mv`, `project rm` (aliased `list`/`move`/`delete`).
+
+Aliases: `ls`, `move`, `delete`/`remove`, `clean-untitled`, `proj`=`project`. `claude-session help` for the full list.
 
 > Heads up: a *running* session caches its title, so starring the one you're in won't show the ⭐ in `/resume` until Claude Code reloads.
 

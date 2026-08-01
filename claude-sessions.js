@@ -13,12 +13,11 @@
 //
 // Single entry point: `claude-session <operation> [args...]`
 //   claude-session list     [path]
-//   claude-session projects
+//   claude-session project  <ls|mv|rm> [args...]
 //   claude-session star     <session-id-or-partial> [path]
 //   claude-session unstar   <session-id-or-partial> [path]
 //   claude-session -i       [path]        // interactive browse: toggle stars + delete (fzf)
 //   claude-session mv      <session-id-or-partial> <from-path> <to-path>
-//   claude-session mv-project <from-path> <to-path>
 //   claude-session rm      [-f|--force] <session-id-or-partial> [path]
 //   claude-session export  <session-id-or-partial> [path] [-o out]
 //   claude-session export  --project [path] [-o out] | --all [-o out]
@@ -34,15 +33,13 @@
 'use strict';
 
 const { opList } = require('./commands/list');
-const { opProjects } = require('./commands/projects');
+const { opProject } = require('./commands/project');
 const { opStar } = require('./commands/star');
 const { opUnstar } = require('./commands/unstar');
 const { opMv } = require('./commands/mv');
-const { opMvProject } = require('./commands/mv-project');
 const { opRm } = require('./commands/rm');
 const { opInteractive } = require('./commands/interactive');
 const { opRmUntitled } = require('./commands/rm-untitled');
-const { opRmProject } = require('./commands/rm-project');
 const { opExport } = require('./commands/export');
 const { opImport } = require('./commands/import');
 const { opHelp } = require('./commands/help');
@@ -58,9 +55,9 @@ function main(argv) {
         case 'list':
         case 'ls':
             return opList(rest);
-        case 'projects':
+        case 'project':
         case 'proj':
-            return opProjects();
+            return opProject(rest);
         case 'star':
             return opStar(rest);
         case 'unstar':
@@ -68,9 +65,6 @@ function main(argv) {
         case 'mv':
         case 'move':
             return opMv(rest);
-        case 'mv-project':
-        case 'move-project':
-            return opMvProject(rest);
         case 'rm':
         case 'delete':
         case 'remove':
@@ -78,8 +72,6 @@ function main(argv) {
         case 'rm-untitled':
         case 'clean-untitled':
             return opRmUntitled(rest);
-        case 'rm-project':
-            return opRmProject(rest);
         case 'export':
             return opExport(rest);
         case 'import':

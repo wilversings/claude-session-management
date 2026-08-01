@@ -13,8 +13,11 @@ that lists, stars, moves, and deletes Claude Code sessions.
 - `lib/common.js` — shared helpers (project-dir resolution, title read/write,
   session lookup, filesystem/prompt utilities). Everything reusable lives here.
 - `commands/<op>.js` — one file per operation, each exporting its `op*` function
-  (`list`, `projects`, `star`, `unstar`, `mv`, `rm`, `interactive`, `export`,
-  `import`, `help`). A helper used by only one command (e.g. `deleteSelection`,
+  (`list`, `project`, `star`, `unstar`, `mv`, `rm`, `interactive`, `export`,
+  `import`, `help`). Whole-project actions are one command, `commands/project.js`,
+  which dispatches its own `ls`/`mv`/`rm` subcommands (`project ls`,
+  `project mv <from> <to>`, `project rm [-f] [path]`) — there is no separate
+  `projects`/`mv-project`/`rm-project` command. A helper used by only one command (e.g. `deleteSelection`,
   `collectSessions`) stays private to that command's file; promote it to
   `lib/common.js` only when a second command needs it. Still no npm deps —
   modules `require` each other only.

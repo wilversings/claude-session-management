@@ -25,9 +25,31 @@ List sessions. With no path, every project is listed, grouped by project.
 With a path, only that project's sessions are listed. Alias:
 .BR ls .
 .TP
-.B projects
-List every project with its session count. Alias:
+.BI "project " "subcommand" " [args ...]"
+Manage whole projects. Alias:
 .BR proj .
+The subcommands are:
+.RS
+.TP
+.B ls
+List every project with its session count. Alias:
+.BR list .
+.TP
+.BI "mv " "from-path to-path"
+Move a whole project's sessions to another path. If the destination
+project already exists, sessions are merged in; nothing at the
+destination is overwritten. Alias:
+.BR move .
+.TP
+.BI "rm " "[\-f|\-\-force] [path]"
+Delete a whole project and all of its sessions. Asks for confirmation
+unless
+.B \-f
+/
+.B \-\-force
+is given. Aliases:
+.BR delete ", " remove .
+.RE
 .TP
 .BI "star " "session-id-or-partial" " [path]"
 Star a session so it shows a star in
@@ -57,12 +79,6 @@ or
 Move a single session from one project path to another. Alias:
 .BR move .
 .TP
-.BI "mv-project " "from-path to-path"
-Move a whole project's sessions to another path. If the destination
-project already exists, sessions are merged in; nothing at the
-destination is overwritten. Alias:
-.BR move-project .
-.TP
 .BI "rm " "[\-f|\-\-force] session-id-or-partial" " [path]"
 Delete a session. Asks for confirmation unless
 .B \-f
@@ -79,14 +95,6 @@ with a path, only that project. Asks for confirmation unless
 .B \-\-force
 is given. Alias:
 .BR clean-untitled .
-.TP
-.BI "rm-project " "[\-f|\-\-force] path"
-Delete a whole project and all of its sessions. Asks for confirmation
-unless
-.B \-f
-/
-.B \-\-force
-is given.
 .TP
 .BI "export " "session-id-or-partial" " [path] [\-o out]"
 Export a single session to an archive (default
