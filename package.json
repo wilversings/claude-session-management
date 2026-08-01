@@ -1,5 +1,5 @@
 {
-  "name": "claude-session-management",
+  "name": "claude-session-manager",
   "version": "1.0.0",
   "description": "Star, move, prune, export, and restore your Claude Code sessions — a tidy, zero-dependency CLI.",
   "keywords": [
@@ -12,16 +12,16 @@
     "star",
     "backup"
   ],
-  "homepage": "https://github.com/wilversings/claude-session-management#readme",
+  "homepage": "https://github.com/wilversings/claude-session-manager#readme",
   "bugs": {
-    "url": "https://github.com/wilversings/claude-session-management/issues"
+    "url": "https://github.com/wilversings/claude-session-manager/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wilversings/claude-session-management.git"
+    "url": "git+https://github.com/wilversings/claude-session-manager.git"
   },
   "license": "MIT",
-  "author": "Marius Aiordăchioaei <aiordachioaei.marius@gmail.com>",
+  "author": "Marius Aiordăchioaei",
   "type": "commonjs",
   "bin": {
     "claude-session": "dist/claude-session.js"

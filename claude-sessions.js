@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Claude Code session management: star, move, and delete sessions.
+// Claude Code session manager: star, move, and delete sessions.
 // Sessions live at ~/.claude/projects/<path-with-slashes-replaced-by-dashes>/<session-id>.jsonl
 //
 // Starring writes a ⭐ into the session's own title so it shows up starred in

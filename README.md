@@ -7,7 +7,7 @@ Starring drops a ⭐ into a session's title so it stands out in the `/resume` pi
 ## Install
 
 ```sh
-npm install -g claude-session-management
+npm install -g claude-session-manager
 ```
 
 This installs the `claude-session` command. Needs Node ≥ 14. The interactive mode
