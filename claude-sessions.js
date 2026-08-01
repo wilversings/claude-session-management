@@ -16,11 +16,10 @@
 //   claude-session projects
 //   claude-session star     <session-id-or-partial> [path]
 //   claude-session unstar   <session-id-or-partial> [path]
-//   claude-session star -i  [path]        // interactive browse + toggle stars (fzf)
+//   claude-session -i       [path]        // interactive browse: toggle stars + delete (fzf)
 //   claude-session mv      <session-id-or-partial> <from-path> <to-path>
 //   claude-session mv-project <from-path> <to-path>
 //   claude-session rm      [-f|--force] <session-id-or-partial> [path]
-//   claude-session rm -i   [path]        // interactive browse + delete (fzf)
 //   claude-session export  <session-id-or-partial> [path] [-o out]
 //   claude-session export  --project [path] [-o out] | --all [-o out]
 //   claude-session import  <archive> [--to path] [-f]
@@ -41,6 +40,7 @@ const { opUnstar } = require('./commands/unstar');
 const { opMv } = require('./commands/mv');
 const { opMvProject } = require('./commands/mv-project');
 const { opRm } = require('./commands/rm');
+const { opInteractive } = require('./commands/interactive');
 const { opRmUntitled } = require('./commands/rm-untitled');
 const { opRmProject } = require('./commands/rm-project');
 const { opExport } = require('./commands/export');
@@ -52,6 +52,9 @@ function main(argv) {
     const rest = argv.slice(1);
 
     switch (cmd) {
+        case '-i':
+        case '--interactive':
+            return opInteractive(rest);
         case 'list':
         case 'ls':
             return opList(rest);

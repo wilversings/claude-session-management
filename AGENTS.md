@@ -13,12 +13,16 @@ that lists, stars, moves, and deletes Claude Code sessions.
 - `lib/common.js` — shared helpers (project-dir resolution, title read/write,
   session lookup, filesystem/prompt utilities). Everything reusable lives here.
 - `commands/<op>.js` — one file per operation, each exporting its `op*` function
-  (`list`, `projects`, `star`, `unstar`, `mv`, `rm`, `export`, `import`, `help`).
-  A helper used by only one command (e.g. `rmInteractive`, `starInteractive`,
+  (`list`, `projects`, `star`, `unstar`, `mv`, `rm`, `interactive`, `export`,
+  `import`, `help`). A helper used by only one command (e.g. `deleteSelection`,
   `collectSessions`) stays private to that command's file; promote it to
   `lib/common.js` only when a second command needs it. Still no npm deps —
-  modules `require` each other only (`unstar` calls into `star` for `-i`, since
-  the interactive browser toggles and is therefore the same screen for both).
+  modules `require` each other only.
+- `commands/interactive.js` is the single fzf browser reached via the top-level
+  `-i` flag (`claude-session -i [path]`, dispatched before the subcommand
+  switch). It both toggles stars (`enter`) and deletes (`ctrl-x`/`del`) on the
+  selection — there are deliberately **no** per-subcommand `star -i` / `rm -i`
+  variants; `star`/`rm` just ignore a stray `-i` and print the top-level form.
 
 ## How Claude Code stores sessions
 
@@ -45,12 +49,12 @@ that lists, stars, moves, and deletes Claude Code sessions.
    and `/resume` silently drops it. Always ensure a trailing newline first.
 4. **Keep it dependency-free at runtime.** No npm deps required to run — standard
    library only. A few *optional* external tools are shelled out to and must
-   degrade gracefully when absent: `fzf` (for `rm -i` and `star -i`), and
+   degrade gracefully when absent: `fzf` (for the `-i` browser), and
    `tar` / `zip` / `unzip` (for `export` and `import`, chosen by whether the
    archive name ends in `.zip`). `esbuild` is a devDependency used only to
    produce the published bundle (see Build below) — it never ships as
    something a user's install needs to fetch or run.
-   Degrade across *versions* too: `star -i` binds `q` to quit-only-while-the-query-
+   Degrade across *versions* too: the `-i` browser binds `q` to quit-only-while-the-query-
    is-empty via fzf's `transform` + `$FZF_QUERY`, falling back to a plain
    `q:abort` where that isn't supported. Support is **probed, not version-sniffed**
    — `fzf --bind <spec> --filter ''` parses the bind without opening a UI and
@@ -66,11 +70,21 @@ that lists, stars, moves, and deletes Claude Code sessions.
 - `mv` doesn't rewrite the `cwd` recorded inside the file — display-only, harmless.
 - A *running* session caches its own title in memory, so re-starring the active
   session won't restar in `/resume` until Claude Code reloads.
-- `star -i` / `unstar -i` open one toggling browser: `enter` flips the star on
-  every selected session, then the list is rebuilt from disk and reopened (with
-  the previous query restored via `--print-query` / `--query`), so it loops until
-  `esc`/`q`. Toggling reads the title fresh from the file rather than the fzf
-  line, so repeated toggles of the same session stay correct.
+- `-i` rows show, per session: modified time, context-window tokens last used,
+  on-disk size, and title. Each file is read **once** per rebuild — the token
+  count and title both come from that one read (`readText` → `titleFromContent`
+  + `contextTokensFromContent`), not two passes. Context tokens = the last
+  assistant turn's `input_tokens + cache_creation_input_tokens +
+  cache_read_input_tokens` (what Claude Code's context meter shows); `null`
+  (rendered `—`) when the session has no `usage` records yet.
+- `-i` opens one browser that dispatches on the accepting key (via fzf's
+  `--expect`): `enter` toggles the star on every selected session, `ctrl-x`/`del`
+  deletes the selection (after a `[y/N]` confirm). After each action the list is
+  rebuilt from disk and reopened (with the previous query restored via
+  `--print-query` / `--query`), so it loops until `esc`/`q`. Toggling reads the
+  title fresh from the file rather than the fzf line, so repeated toggles of the
+  same session stay correct. With `--print-query` then `--expect`, fzf prints the
+  query on line 1, the accepting key on line 2, then the selected rows.
 - `export` bundles the raw `.jsonl` files plus a `manifest.json` (each session's
   `sessionId`, `cwd`, and `title`). `import` reads the manifest and drops each
   file into the project dir for its recorded `cwd` (or `--to` to override), never

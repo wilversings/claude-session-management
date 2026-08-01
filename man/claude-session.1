@@ -36,18 +36,22 @@ Star a session so it shows a star in
 .BI "unstar " "session-id-or-partial" " [path]"
 Remove a session's star.
 .TP
-.BI "star \-i " "[path]"
-Interactively browse sessions with fzf and toggle stars on the selection.
+.BI "\-i " "[path]"
+Interactively browse sessions with fzf and act on the selection. Each row
+shows the session's last-modified time, the context-window tokens it was
+last using, its on-disk size, and its title.
 .B tab
-multi-selects,
+multi-selects;
 .B enter
-flips the star on everything selected and reopens the list, so you can
-star and unstar repeatedly until you quit with
+toggles the star on everything selected, while
+.B ctrl-x
+(or
+.BR del )
+deletes the selection after a confirmation. The list reopens after each
+action, so you can star, unstar, and delete repeatedly until you quit with
 .B esc
 or
 .BR q .
-.IB "unstar \-i " "[path]"
-opens the same screen.
 .TP
 .BI "mv " "session-id-or-partial from-path to-path"
 Move a single session from one project path to another. Alias:
@@ -66,9 +70,6 @@ Delete a session. Asks for confirmation unless
 .B \-\-force
 is given. Aliases:
 .BR delete ", " remove .
-.TP
-.BI "rm \-i " "[path]"
-Interactively browse sessions with fzf and delete the selection.
 .TP
 .BI "rm-untitled " "[\-f|\-\-force] [path]"
 Delete every untitled session. With no path, all projects are scanned;
@@ -102,10 +103,15 @@ Import sessions from an archive produced by
 .BR export .
 Each session is restored to the project it was exported from, unless
 .B \-\-to
-redirects them all to one project. Existing sessions at the destination
-are left untouched unless
+redirects them all to one project. A session conflicts when a
+.I .jsonl
+with the same session ID already exists in the destination project; by
+default the conflicting session is skipped and the existing one is left
+untouched. Pass
 .B \-f
-is given.
+to overwrite conflicting sessions with the archived copy instead. The
+closing summary reports how many sessions were imported and how many
+were skipped.
 .TP
 .B help
 Show a usage summary. Aliases:
@@ -129,9 +135,9 @@ Any unique substring of a session's id works anywhere a
 is expected \(em there is no need to type the whole UUID. An ambiguous or
 missing match prints a diagnostic and exits non-zero.
 .SH REQUIREMENTS
-Node.js >= 14. The interactive modes
-.RB ( "rm \-i" ", " "star \-i" )
-additionally need
+Node.js >= 14. The interactive mode
+.RB ( "\-i" )
+additionally needs
 .BR fzf (1)
 on PATH; export/import need
 .BR tar (1)
