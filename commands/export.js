@@ -64,39 +64,13 @@ function collectSessions(mode, opts) {
     return out;
 }
 
-// Bundle sessions into a portable archive. The archive holds a manifest.json
-// (recording each session's cwd so import can place it in the right project) and
-// the raw .jsonl files under sessions/. Format is chosen by the output name:
-// '.zip' uses the system `zip`, anything else (default .tar.gz) uses `tar`.
-function opExport(args) {
-    let output = null;
-    let all = false;
-    let project = false;
-    const positional = [];
-    for (let i = 0; i < args.length; i++) {
-        const a = args[i];
-        if (a === '-o' || a === '--output') output = args[++i];
-        else if (a === '--all') all = true;
-        else if (a === '--project' || a === '-p') project = true;
-        else positional.push(a);
-    }
-
-    let sessions;
-    if (all) {
-        sessions = collectSessions('all', {});
-    } else if (project) {
-        sessions = collectSessions('project', { path: positional[0] });
-    } else {
-        const sessionId = positional[0];
-        if (!sessionId) {
-            console.log('Usage: claude-session export <id-or-partial> [path] [-o out.tar.gz]');
-            console.log('       claude-session export --project [path] [-o out.tar.gz]');
-            console.log('       claude-session export --all [-o out.tar.gz]');
-            return 1;
-        }
-        sessions = collectSessions('one', { sessionId, path: positional[1] });
-    }
-
+// Bundle an already-collected set of sessions into a portable archive. The
+// archive holds a manifest.json (recording each session's cwd so import can
+// place it in the right project) and the raw .jsonl files under sessions/.
+// Format is chosen by the output name: '.zip' uses the system `zip`, anything
+// else (default .tar.gz) uses `tar`. `sessions` may be null when the caller's
+// lookup already failed and complained. Returns a process exit code.
+function writeArchive(sessions, output) {
     if (sessions === null) return 1; // resolveSession already complained
     if (sessions.length === 0) {
         console.error('No sessions to export.');
@@ -152,4 +126,55 @@ function opExport(args) {
     return 0;
 }
 
-module.exports = { opExport };
+// Parse a shared `[path] [-o out]` tail into { path, output }. Any leftover
+// positional beyond the first is ignored.
+function parsePathAndOutput(args) {
+    let output = null;
+    const positional = [];
+    for (let i = 0; i < args.length; i++) {
+        const a = args[i];
+        if (a === '-o' || a === '--output') output = args[++i];
+        else positional.push(a);
+    }
+    return { path: positional[0], output };
+}
+
+// export — bundle one session, or (with --all) every session, into an archive.
+// Whole-project export lives under `project export` (see commands/project.js).
+function opExport(args) {
+    let output = null;
+    let all = false;
+    const positional = [];
+    for (let i = 0; i < args.length; i++) {
+        const a = args[i];
+        if (a === '-o' || a === '--output') output = args[++i];
+        else if (a === '--all') all = true;
+        else positional.push(a);
+    }
+
+    let sessions;
+    if (all) {
+        sessions = collectSessions('all', {});
+    } else {
+        const sessionId = positional[0];
+        if (!sessionId) {
+            console.log('Usage: claude-session export <id-or-partial> [path] [-o out.tar.gz]');
+            console.log('       claude-session export --all [-o out.tar.gz]');
+            console.log('       claude-session project export [path] [-o out.tar.gz]');
+            return 1;
+        }
+        sessions = collectSessions('one', { sessionId, path: positional[1] });
+    }
+
+    return writeArchive(sessions, output);
+}
+
+// project export — bundle every session in one project into an archive.
+// The reusable half of `export` reached through the `project` subcommand.
+function opProjectExport(args) {
+    const { path: projectPath, output } = parsePathAndOutput(args);
+    const sessions = collectSessions('project', { path: projectPath });
+    return writeArchive(sessions, output);
+}
+
+module.exports = { opExport, opProjectExport };

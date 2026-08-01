@@ -35,10 +35,20 @@ The subcommands are:
 List every project with its session count. Alias:
 .BR list .
 .TP
-.BI "mv " "from-path to-path"
+.BI "mv " "[\-f|\-\-force] from-path to-path"
 Move a whole project's sessions to another path. If the destination
-project already exists, sessions are merged in; nothing at the
-destination is overwritten. Alias:
+project already exists, sessions are merged in. A filename collision
+(rare \(em session filenames are Claude Code's own random UUIDs) prompts
+per file to
+.BR o verwrite,
+overwrite
+.BR a ll,
+.BR s kip,
+or skip a\fBl\fRl, unless
+.B \-f
+/
+.B \-\-force
+is given, which overwrites every collision without asking. Alias:
 .BR move .
 .TP
 .BI "rm " "[\-f|\-\-force] [path]"
@@ -49,6 +59,12 @@ unless
 .B \-\-force
 is given. Aliases:
 .BR delete ", " remove .
+.TP
+.BI "export " "[path] [\-o out]"
+Export every session in a project to an archive. With no path, the current
+directory's project is used. See
+.B export
+below for archive formats.
 .RE
 .TP
 .BI "star " "session-id-or-partial" " [path]"
@@ -99,9 +115,8 @@ is given. Alias:
 .BI "export " "session-id-or-partial" " [path] [\-o out]"
 Export a single session to an archive (default
 .IR claude-sessions-<timestamp>.tar.gz ).
-.TP
-.BI "export \-\-project " "[path] [\-o out]"
-Export every session in a project.
+To export a whole project, use
+.BR "project export" .
 .TP
 .BI "export \-\-all " "[\-o out]"
 Export every session in every project.

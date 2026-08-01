@@ -16,7 +16,7 @@ that lists, stars, moves, and deletes Claude Code sessions.
   (`list`, `project`, `star`, `unstar`, `mv`, `rm`, `interactive`, `export`,
   `import`, `help`). Whole-project actions are one command, `commands/project.js`,
   which dispatches its own `ls`/`mv`/`rm` subcommands (`project ls`,
-  `project mv <from> <to>`, `project rm [-f] [path]`) — there is no separate
+  `project mv [-f] <from> <to>`, `project rm [-f] [path]`) — there is no separate
   `projects`/`mv-project`/`rm-project` command. A helper used by only one command (e.g. `deleteSelection`,
   `collectSessions`) stays private to that command's file; promote it to
   `lib/common.js` only when a second command needs it. Still no npm deps —
@@ -71,6 +71,13 @@ that lists, stars, moves, and deletes Claude Code sessions.
   missing matches print a diagnostic and exit non-zero.
 - `list` with no path groups every project; with a path lists just that one.
 - `mv` doesn't rewrite the `cwd` recorded inside the file — display-only, harmless.
+- `project mv` merges into an existing destination. A per-file basename collision
+  (rare — filenames are Claude Code UUIDs) stops and prompts `o`verwrite /
+  overwrite `a`ll / `s`kip / skip a`l`l; a skipped file is left in the source dir
+  (so the source dir isn't emptied and isn't removed). `-f`/`--force` answers
+  overwrite-all up front. An empty prompt line — a bare Enter *or* a
+  non-interactive stdin at EOF — defaults to skip, so a piped run can't loop
+  forever waiting for input.
 - A *running* session caches its own title in memory, so re-starring the active
   session won't restar in `/resume` until Claude Code reloads.
 - `-i` rows show, per session: modified time, context-window tokens last used,

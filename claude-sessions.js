@@ -13,14 +13,14 @@
 //
 // Single entry point: `claude-session <operation> [args...]`
 //   claude-session list     [path]
-//   claude-session project  <ls|mv|rm> [args...]
+//   claude-session project  <ls|mv|rm|export> [args...]
 //   claude-session star     <session-id-or-partial> [path]
 //   claude-session unstar   <session-id-or-partial> [path]
 //   claude-session -i       [path]        // interactive browse: toggle stars + delete (fzf)
 //   claude-session mv      <session-id-or-partial> <from-path> <to-path>
 //   claude-session rm      [-f|--force] <session-id-or-partial> [path]
-//   claude-session export  <session-id-or-partial> [path] [-o out]
-//   claude-session export  --project [path] [-o out] | --all [-o out]
+//   claude-session export  <session-id-or-partial> [path] [-o out] | --all [-o out]
+//   claude-session project export [path] [-o out]
 //   claude-session import  <archive> [--to path] [-f]
 //
 // Node.js (>=14). No npm deps — the interactive modes additionally need fzf,

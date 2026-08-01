@@ -56,7 +56,7 @@ Move sessions between machines (or back them up) as a self-contained archive:
 
 ```sh
 claude-session export 4bdd76                  # one session -> claude-sessions-<ts>.tar.gz
-claude-session export --project ~/repos/app   # a whole project
+claude-session project export ~/repos/app     # a whole project
 claude-session export --all -o backup.tar.gz  # everything, to a named file
 claude-session export 4bdd76 -o sess.zip      # .zip instead of .tar.gz
 
@@ -75,7 +75,11 @@ exists in the destination project. By default `import` **skips** it (printing
 Pass `-f`/`--force` to **overwrite** conflicting sessions with the archived copy.
 The closing summary reports how many were imported and how many were skipped.
 
-Whole-project operations live under `project`: `project ls`, `project mv`, `project rm` (aliased `list`/`move`/`delete`).
+Whole-project operations live under `project`: `project ls`, `project mv`, `project rm`, `project export` (aliased `list`/`move`/`delete`).
+`project mv` merges into an existing destination; if a session filename collides
+(rare — filenames are Claude Code's own UUIDs) it prompts per file to **o**verwrite,
+overwrite **a**ll, **s**kip, or skip a**l**l. `-f`/`--force` overwrites every collision
+without asking.
 
 Aliases: `ls`, `move`, `delete`/`remove`, `clean-untitled`, `proj`=`project`. `claude-session help` for the full list.
 
