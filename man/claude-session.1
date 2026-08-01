@@ -1,0 +1,164 @@
+.TH CLAUDE-SESSION 1 "2026-08-01" "claude-session-management" "User Commands"
+.SH NAME
+claude-session \- star, move, and delete Claude Code sessions from the terminal
+.SH SYNOPSIS
+.B claude-session
+.I operation
+.RI [ args " ...]"
+.SH DESCRIPTION
+.B claude-session
+manages the session files Claude Code keeps under
+.IR ~/.claude/projects/ .
+Starring drops a star into a session's title so it stands out in the
+.B /resume
+picker \(em there is no separate database, the star rides along on the
+session's
+.B .jsonl
+file itself, which means it travels automatically on
+.B mv
+and disappears on
+.BR rm .
+.SH OPERATIONS
+.TP
+.BI "list " "[path]"
+List sessions. With no path, every project is listed, grouped by project.
+With a path, only that project's sessions are listed. Alias:
+.BR ls .
+.TP
+.B projects
+List every project with its session count. Alias:
+.BR proj .
+.TP
+.BI "star " "session-id-or-partial" " [path]"
+Star a session so it shows a star in
+.BR /resume .
+.TP
+.BI "unstar " "session-id-or-partial" " [path]"
+Remove a session's star.
+.TP
+.BI "star \-i " "[path]"
+Interactively browse sessions with fzf and toggle stars on the selection.
+.B tab
+multi-selects,
+.B enter
+flips the star on everything selected and reopens the list, so you can
+star and unstar repeatedly until you quit with
+.B esc
+or
+.BR q .
+.IB "unstar \-i " "[path]"
+opens the same screen.
+.TP
+.BI "mv " "session-id-or-partial from-path to-path"
+Move a single session from one project path to another. Alias:
+.BR move .
+.TP
+.BI "mv-project " "from-path to-path"
+Move a whole project's sessions to another path. If the destination
+project already exists, sessions are merged in; nothing at the
+destination is overwritten. Alias:
+.BR move-project .
+.TP
+.BI "rm " "[\-f|\-\-force] session-id-or-partial" " [path]"
+Delete a session. Asks for confirmation unless
+.B \-f
+/
+.B \-\-force
+is given. Aliases:
+.BR delete ", " remove .
+.TP
+.BI "rm \-i " "[path]"
+Interactively browse sessions with fzf and delete the selection.
+.TP
+.BI "rm-untitled " "[\-f|\-\-force] [path]"
+Delete every untitled session. With no path, all projects are scanned;
+with a path, only that project. Asks for confirmation unless
+.B \-f
+/
+.B \-\-force
+is given. Alias:
+.BR clean-untitled .
+.TP
+.BI "rm-project " "[\-f|\-\-force] path"
+Delete a whole project and all of its sessions. Asks for confirmation
+unless
+.B \-f
+/
+.B \-\-force
+is given.
+.TP
+.BI "export " "session-id-or-partial" " [path] [\-o out]"
+Export a single session to an archive (default
+.IR claude-sessions-<timestamp>.tar.gz ).
+.TP
+.BI "export \-\-project " "[path] [\-o out]"
+Export every session in a project.
+.TP
+.BI "export \-\-all " "[\-o out]"
+Export every session in every project.
+.TP
+.BI "import " "archive" " [\-\-to path] [\-f]"
+Import sessions from an archive produced by
+.BR export .
+Each session is restored to the project it was exported from, unless
+.B \-\-to
+redirects them all to one project. Existing sessions at the destination
+are left untouched unless
+.B \-f
+is given.
+.TP
+.B help
+Show a usage summary. Aliases:
+.BR "-h" ", " "--help" .
+Also shown when no operation is given.
+.SH ARCHIVES
+Archive format is chosen by the output filename: anything ending in
+.B .zip
+uses
+.B zip
+/
+.BR unzip ,
+otherwise the archive is a
+.B .tar.gz
+built with
+.BR tar .
+Both are shelled out to as ambient system tools.
+.SH SESSION IDS
+Any unique substring of a session's id works anywhere a
+.I session-id-or-partial
+is expected \(em there is no need to type the whole UUID. An ambiguous or
+missing match prints a diagnostic and exits non-zero.
+.SH REQUIREMENTS
+Node.js >= 14. The interactive modes
+.RB ( "rm \-i" ", " "star \-i" )
+additionally need
+.BR fzf (1)
+on PATH; export/import need
+.BR tar (1)
+or
+.BR zip (1) / unzip (1)
+depending on the chosen archive format.
+.SH CAVEATS
+A running Claude Code session caches its own title in memory, so starring
+the session you're currently in won't show the star in
+.B /resume
+until Claude Code reloads.
+.SH FILES
+.I ~/.claude/projects/<encoded-path>/<session-id>.jsonl
+.RS
+One file per session.
+.I <encoded-path>
+is the project's absolute path with every
+.B /
+replaced by
+.BR \- .
+The filename base is the session's id and is never changed by any
+operation here.
+.RE
+.SH SEE ALSO
+.BR fzf (1),
+.BR tar (1)
+.br
+Project homepage: https://github.com/wilversings/claude-session-management
+.SH AUTHOR
+Marius Aiord\[u0103]chioaei
