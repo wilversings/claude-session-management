@@ -131,7 +131,6 @@ test `dist/claude-session.js` before committing anything that depends on it.
   runs as part of npm's normal publish lifecycle. Bump `version` in
   `package.json` yourself (and tag `vX.Y.Z`) before running it.
 - `.github/workflows/publish.yml` mirrors that (checkout, `npm ci`, `npm test`,
-  `npm publish`) triggered by pushing a `v*` tag, but its `publish` job is
-  gated with `if: false` — **dormant on purpose**. To activate: delete that
-  line (or flip it to `true`), and make sure an `NPM_TOKEN` repo secret
-  (an npm automation token with publish rights) is set first.
+  `npm publish`), triggered manually via `workflow_dispatch` from the Actions
+  tab (or `gh workflow run`). Requires an `NPM_TOKEN` repo secret (an npm
+  automation token with publish rights) to be set.

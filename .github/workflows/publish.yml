@@ -1,17 +1,13 @@
 name: Publish to npm
 
-# Fires on version tags (v1.2.3). Dormant for now: the `publish` job below is
-# gated behind `if: false`. To activate, delete (or flip to `true`) that
-# line — see AGENTS.md "Publishing" for the full checklist, including
-# setting the NPM_TOKEN repo secret.
+# Manual trigger only — run from the Actions tab (or `gh workflow run`) to
+# publish to npm. Requires the NPM_TOKEN repo secret (an npm automation
+# token with publish rights) to be set — see AGENTS.md "Publishing".
 on:
-  push:
-    tags:
-      - 'v*'
+  workflow_dispatch:
 
 jobs:
   publish:
-    if: false
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
