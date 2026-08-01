@@ -23,6 +23,7 @@ function opHelp() {
     console.log('  export <id-or-partial> [path] [-o out]    Export a session to an archive');
     console.log('  export --all [-o out]                     Export every session');
     console.log('  import <archive> [--to path] [-f]         Import sessions from an archive');
+    console.log('  --version                                 Print the version');
     console.log('');
     console.log('Archives are .tar.gz by default, or .zip if the output name ends in .zip');
     console.log('(needs tar / zip+unzip on PATH). Import restores each session to the');

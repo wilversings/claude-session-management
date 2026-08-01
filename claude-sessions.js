@@ -22,6 +22,7 @@
 //   claude-session export  <session-id-or-partial> [path] [-o out] | --all [-o out]
 //   claude-session project export [path] [-o out]
 //   claude-session import  <archive> [--to path] [-f]
+//   claude-session --version              // print the version
 //
 // Node.js (>=14). No npm deps — the interactive modes additionally need fzf,
 // and export/import shell out to tar (or zip/unzip for .zip archives).
@@ -43,6 +44,10 @@ const { opRmUntitled } = require('./commands/rm-untitled');
 const { opExport } = require('./commands/export');
 const { opImport } = require('./commands/import');
 const { opHelp } = require('./commands/help');
+
+// Baked in at build time (esbuild inlines this require) and read from disk when
+// running the unbundled source — either way it tracks package.json's version.
+const { version } = require('./package.json');
 
 function main(argv) {
     const cmd = argv[0];
@@ -76,6 +81,11 @@ function main(argv) {
             return opExport(rest);
         case 'import':
             return opImport(rest);
+        case '-v':
+        case '-V':
+        case '--version':
+            console.log(version);
+            return 0;
         case undefined:
         case '':
         case 'help':

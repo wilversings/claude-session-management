@@ -1,6 +1,6 @@
-# claude-session
+# ⭐ Claude Session Manager
 
-Star ⭐, move, and delete your [Claude Code](https://claude.com/claude-code) sessions from the terminal.
+**Star, move, prune, export, and restore your [Claude Code](https://claude.com/claude-code) sessions — a tidy, zero-dependency CLI.**
 
 Starring drops a ⭐ into a session's title so it stands out in the `/resume` picker — no separate database, the star just rides along on the session file.
 
@@ -10,9 +10,11 @@ Starring drops a ⭐ into a session's title so it stands out in the `/resume` pi
 npm install -g claude-session-management
 ```
 
-Needs Node ≥ 14. The interactive mode (`-i`) also wants [fzf](https://github.com/junegunn/fzf).
+This installs the `claude-session` command. Needs Node ≥ 14. The interactive mode
+(`-i`) also wants [fzf](https://github.com/junegunn/fzf).
 
-A global install also wires up `man claude-session`.
+A global install also sets up the manual, so `man claude-session` gives you the
+full reference.
 
 ## Use
 
@@ -30,6 +32,7 @@ claude-session rm 4bdd76             # delete one (asks first; -f to skip)
 claude-session rm-untitled            # delete every untitled session (all projects, asks first)
 claude-session rm-untitled ~/repos/x  # ...scoped to one project
 claude-session project rm ~/repos/old  # delete a whole project + all its sessions (asks first)
+claude-session --version             # print the version
 ```
 
 `path` defaults to the current directory. Any unique chunk of a session id works — no need to type the whole UUID.

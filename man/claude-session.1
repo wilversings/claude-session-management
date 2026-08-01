@@ -5,6 +5,20 @@ claude-session \- star, move, and delete Claude Code sessions from the terminal
 .B claude-session
 .I operation
 .RI [ args " ...]"
+.PP
+Examples:
+.PP
+.in +4n
+.EX
+claude\-session list                  \fR# every project, grouped\fP
+claude\-session star 4bdd76            \fR# star a session in the current project\fP
+claude\-session \-i                     \fR# interactive fzf browser\fP
+claude\-session mv 4bdd76 ~/old ~/new  \fR# move a session between projects\fP
+claude\-session rm 4bdd76              \fR# delete a session (asks first)\fP
+claude\-session export \-\-all \-o bak.tar.gz  \fR# back up everything\fP
+claude\-session import bak.tar.gz      \fR# restore from an archive\fP
+.EE
+.in
 .SH DESCRIPTION
 .B claude-session
 manages the session files Claude Code keeps under
@@ -135,6 +149,10 @@ untouched. Pass
 to overwrite conflicting sessions with the archived copy instead. The
 closing summary reports how many sessions were imported and how many
 were skipped.
+.TP
+.B \-\-version
+Print the version and exit. Alias:
+.BR \-v .
 .TP
 .B help
 Show a usage summary. Aliases:

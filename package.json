@@ -1,13 +1,16 @@
 {
   "name": "claude-session-management",
   "version": "1.0.0",
-  "description": "Pin (star), move, and delete Claude Code sessions from the command line.",
+  "description": "Star, move, prune, export, and restore your Claude Code sessions — a tidy, zero-dependency CLI.",
   "keywords": [
     "claude",
     "claude-code",
     "cli",
     "sessions",
-    "resume"
+    "session-manager",
+    "resume",
+    "star",
+    "backup"
   ],
   "homepage": "https://github.com/wilversings/claude-session-management#readme",
   "bugs": {
@@ -25,19 +28,19 @@
   },
   "man": "./man/claude-session.1",
   "files": [
-    "claude-sessions.js",
-    "lib/",
-    "commands/",
+    "dist/",
     "man/",
-    "dist/"
+    "scripts/manpage.js"
   ],
   "engines": {
     "node": ">=14"
   },
   "scripts": {
-    "test": "for f in claude-sessions.js lib/*.js commands/*.js; do node --check \"$f\" || exit 1; done && echo 'syntax OK'",
+    "test": "for f in claude-sessions.js lib/*.js commands/*.js scripts/*.js; do node --check \"$f\" || exit 1; done && echo 'syntax OK'",
     "build": "esbuild claude-sessions.js --bundle --minify --platform=node --target=node14 --outfile=dist/claude-session.js --log-level=warning",
     "prepare": "npm run build",
+    "postinstall": "node scripts/manpage.js install",
+    "preuninstall": "node scripts/manpage.js uninstall",
     "prepublishOnly": "npm test",
     "release": "npm publish"
   },
