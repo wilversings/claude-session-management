@@ -43,10 +43,13 @@ that lists, stars, moves, and deletes Claude Code sessions.
 3. **Guard the trailing newline before appending.** If the file's last byte isn't
    `\n`, our record glues onto the previous line, that line fails `JSON.parse`,
    and `/resume` silently drops it. Always ensure a trailing newline first.
-4. **Keep it dependency-free.** No npm deps — standard library only. A few
-   *optional* external tools are shelled out to and must degrade gracefully when
-   absent: `fzf` (for `rm -i` and `star -i`), and `tar` / `zip` / `unzip` (for
-   `export` and `import`, chosen by whether the archive name ends in `.zip`).
+4. **Keep it dependency-free at runtime.** No npm deps required to run — standard
+   library only. A few *optional* external tools are shelled out to and must
+   degrade gracefully when absent: `fzf` (for `rm -i` and `star -i`), and
+   `tar` / `zip` / `unzip` (for `export` and `import`, chosen by whether the
+   archive name ends in `.zip`). `esbuild` is a devDependency used only to
+   produce the published bundle (see Build below) — it never ships as
+   something a user's install needs to fetch or run.
    Degrade across *versions* too: `star -i` binds `q` to quit-only-while-the-query-
    is-empty via fzf's `transform` + `$FZF_QUERY`, falling back to a plain
    `q:abort` where that isn't supported. Support is **probed, not version-sniffed**
@@ -77,8 +80,22 @@ that lists, stars, moves, and deletes Claude Code sessions.
 
 ## Conventions
 
-- CommonJS, `'use strict'`, 4-space indent, no build step. One file per command
-  under `commands/`; shared code in `lib/common.js`.
+- CommonJS, `'use strict'`, 4-space indent. One file per command under
+  `commands/`; shared code in `lib/common.js`.
 - Operations return an exit code; `main` returns it and `process.exit` uses it.
 - Verify syntax with `npm test` (`node --check` over every file). Test destructive paths against a
   throwaway `~/.claude/projects/<encoded>` dir, never real sessions.
+
+## Build
+
+`claude-sessions.js` and `commands/*.js`/`lib/common.js` are the source of
+truth and stay unbundled, readable CommonJS — edit those, not the build
+output. `npm run build` (esbuild, devDependency only) bundles + minifies them
+into `dist/claude-session.js`, which is what `bin.claude-session` in
+`package.json` points at — that's the file that actually runs when someone
+installs the package. `dist/` is gitignored and rebuilt via the `prepare`
+npm lifecycle script, so it's generated automatically on `npm install`
+(local clone or git dependency) and on `npm publish`/`npm pack`; registry
+installs get the already-built file from the published tarball and never
+run esbuild themselves. If you change source, run `npm run build` and smoke
+test `dist/claude-session.js` before committing anything that depends on it.
