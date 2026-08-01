@@ -99,3 +99,15 @@ npm lifecycle script, so it's generated automatically on `npm install`
 installs get the already-built file from the published tarball and never
 run esbuild themselves. If you change source, run `npm run build` and smoke
 test `dist/claude-session.js` before committing anything that depends on it.
+
+## Publishing
+
+- `npm run release` bumps nothing on its own — it's `npm publish` with a
+  `prepublishOnly` hook (`npm test`) as a safety net; `prepare` (build) still
+  runs as part of npm's normal publish lifecycle. Bump `version` in
+  `package.json` yourself (and tag `vX.Y.Z`) before running it.
+- `.github/workflows/publish.yml` mirrors that (checkout, `npm ci`, `npm test`,
+  `npm publish`) triggered by pushing a `v*` tag, but its `publish` job is
+  gated with `if: false` — **dormant on purpose**. To activate: delete that
+  line (or flip it to `true`), and make sure an `NPM_TOKEN` repo secret
+  (an npm automation token with publish rights) is set first.
