@@ -12,6 +12,7 @@ function opHelp() {
     console.log('  projects                                  List all projects with session counts');
     console.log('  star   <session-id-or-partial> [path]     Star a session (shows ⭐ in /resume)');
     console.log("  unstar <session-id-or-partial> [path]     Remove a session's star");
+    console.log('  star   -i [path]                          Interactively toggle stars (fzf; unstar -i is the same)');
     console.log('  mv    <session-id-or-partial> <from> <to> Move a session between project paths');
     console.log('  mv-project <from-path> <to-path>          Move a whole project (all its sessions)');
     console.log("                                             If <to> already exists, sessions are merged in, not overwritten");

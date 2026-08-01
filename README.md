@@ -10,7 +10,7 @@ Starring drops a ⭐ into a session's title so it stands out in the `/resume` pi
 npm install -g claude-session-management
 ```
 
-Needs Node ≥ 14. The interactive delete (`rm -i`) also wants [fzf](https://github.com/junegunn/fzf).
+Needs Node ≥ 14. The interactive modes (`rm -i`, `star -i`) also want [fzf](https://github.com/junegunn/fzf).
 
 ## Use
 
@@ -19,6 +19,7 @@ claude-session list                  # all projects, grouped
 claude-session list ~/repos/my-app   # just one project
 claude-session star 4bdd76           # ⭐ a session (current project)
 claude-session unstar 4bdd76         # remove the ⭐
+claude-session star -i               # browse + toggle ⭐ with fzf
 claude-session mv 4bdd76 ~/old ~/new # move to another project
 claude-session mv-project ~/old ~/new # move a whole project's sessions
 claude-session rm 4bdd76             # delete one (asks first; -f to skip)
@@ -29,6 +30,10 @@ claude-session rm-project ~/repos/old  # delete a whole project + all its sessio
 ```
 
 `path` defaults to the current directory. Any unique chunk of a session id works — no need to type the whole UUID.
+
+In `star -i` (same screen as `unstar -i`), <kbd>tab</kbd> multi-selects and <kbd>enter</kbd> flips the ⭐ on
+everything selected, then hands the list straight back — star and unstar as many sessions as
+you like, as many times as you like — until you quit with <kbd>esc</kbd> or <kbd>q</kbd>.
 
 Moving into a project that already exists **merges** the sessions in — existing sessions at
 the destination are left alone, nothing gets overwritten.

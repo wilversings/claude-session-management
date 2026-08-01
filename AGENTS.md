@@ -14,9 +14,11 @@ that lists, stars, moves, and deletes Claude Code sessions.
   session lookup, filesystem/prompt utilities). Everything reusable lives here.
 - `commands/<op>.js` — one file per operation, each exporting its `op*` function
   (`list`, `projects`, `star`, `unstar`, `mv`, `rm`, `export`, `import`, `help`).
-  A helper used by only one command (e.g. `rmInteractive`, `collectSessions`)
-  stays private to that command's file; promote it to `lib/common.js` only when a
-  second command needs it. Still no npm deps — modules `require` each other only.
+  A helper used by only one command (e.g. `rmInteractive`, `starInteractive`,
+  `collectSessions`) stays private to that command's file; promote it to
+  `lib/common.js` only when a second command needs it. Still no npm deps —
+  modules `require` each other only (`unstar` calls into `star` for `-i`, since
+  the interactive browser toggles and is therefore the same screen for both).
 
 ## How Claude Code stores sessions
 
@@ -43,8 +45,13 @@ that lists, stars, moves, and deletes Claude Code sessions.
    and `/resume` silently drops it. Always ensure a trailing newline first.
 4. **Keep it dependency-free.** No npm deps — standard library only. A few
    *optional* external tools are shelled out to and must degrade gracefully when
-   absent: `fzf` (for `rm -i`), and `tar` / `zip` / `unzip` (for `export` and
-   `import`, chosen by whether the archive name ends in `.zip`).
+   absent: `fzf` (for `rm -i` and `star -i`), and `tar` / `zip` / `unzip` (for
+   `export` and `import`, chosen by whether the archive name ends in `.zip`).
+   Degrade across *versions* too: `star -i` binds `q` to quit-only-while-the-query-
+   is-empty via fzf's `transform` + `$FZF_QUERY`, falling back to a plain
+   `q:abort` where that isn't supported. Support is **probed, not version-sniffed**
+   — `fzf --bind <spec> --filter ''` parses the bind without opening a UI and
+   exits 2 on an unknown action.
 5. **Titles are literal UTF-8.** Use `JSON.stringify` to build records so `⭐` and
    any user text are escaped correctly — mirror exactly what `/rename` writes.
 
@@ -56,6 +63,11 @@ that lists, stars, moves, and deletes Claude Code sessions.
 - `mv` doesn't rewrite the `cwd` recorded inside the file — display-only, harmless.
 - A *running* session caches its own title in memory, so re-starring the active
   session won't restar in `/resume` until Claude Code reloads.
+- `star -i` / `unstar -i` open one toggling browser: `enter` flips the star on
+  every selected session, then the list is rebuilt from disk and reopened (with
+  the previous query restored via `--print-query` / `--query`), so it loops until
+  `esc`/`q`. Toggling reads the title fresh from the file rather than the fzf
+  line, so repeated toggles of the same session stay correct.
 - `export` bundles the raw `.jsonl` files plus a `manifest.json` (each session's
   `sessionId`, `cwd`, and `title`). `import` reads the manifest and drops each
   file into the project dir for its recorded `cwd` (or `--to` to override), never
