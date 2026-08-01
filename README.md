@@ -12,6 +12,8 @@ npm install -g claude-session-management
 
 Needs Node ≥ 14. The interactive modes (`rm -i`, `star -i`) also want [fzf](https://github.com/junegunn/fzf).
 
+A global install also wires up `man claude-session`.
+
 ## Use
 
 ```sh

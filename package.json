@@ -23,10 +23,12 @@
   "bin": {
     "claude-session": "claude-sessions.js"
   },
+  "man": "./man/claude-session.1",
   "files": [
     "claude-sessions.js",
     "lib/",
-    "commands/"
+    "commands/",
+    "man/"
   ],
   "engines": {
     "node": ">=14"
