@@ -21,19 +21,25 @@
   "author": "Marius Aiordăchioaei <aiordachioaei.marius@gmail.com>",
   "type": "commonjs",
   "bin": {
-    "claude-session": "claude-sessions.js"
+    "claude-session": "dist/claude-session.js"
   },
   "man": "./man/claude-session.1",
   "files": [
     "claude-sessions.js",
     "lib/",
     "commands/",
-    "man/"
+    "man/",
+    "dist/"
   ],
   "engines": {
     "node": ">=14"
   },
   "scripts": {
-    "test": "for f in claude-sessions.js lib/*.js commands/*.js; do node --check \"$f\" || exit 1; done && echo 'syntax OK'"
+    "test": "for f in claude-sessions.js lib/*.js commands/*.js; do node --check \"$f\" || exit 1; done && echo 'syntax OK'",
+    "build": "esbuild claude-sessions.js --bundle --minify --platform=node --target=node14 --outfile=dist/claude-session.js --log-level=warning",
+    "prepare": "npm run build"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.1"
   }
 }
